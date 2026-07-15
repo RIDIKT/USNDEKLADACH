@@ -17,26 +17,36 @@
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             width: 100%;
-            max-width: 480px;
+            max-width: 700px;
         }
         h1 { font-size: 20px; margin-bottom: 20px; }
-        .row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 13.5px;
+        }
+        th, td {
+            padding: 10px 8px;
+            text-align: right;
             border-bottom: 1px solid #eee;
         }
-        .row span:first-child { color: #555; }
-        .row span:last-child { font-weight: 600; }
+        th:first-child, td:first-child { text-align: left; }
+        th { color: #555; font-weight: 600; background: #f8f9fb; }
         .highlight {
             background: #eaf3ff;
             padding: 15px;
             border-radius: 6px;
-            margin-top: 15px;
             text-align: center;
             font-size: 18px;
             font-weight: bold;
             color: #2559c7;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            color: #555;
         }
         a { display: block; margin-top: 20px; text-align: center; color: #2559c7; }
     </style>
@@ -45,25 +55,38 @@
     <div class="container">
         <h1>Результат расчёта</h1>
 
-        <div class="row">
-            <span>Общий доход</span>
+        <table>
+            <tr>
+                <th>Квартал</th>
+                <th>Доход за квартал</th>
+                <th>Доход нараст. итогом</th>
+                <th>Налог нараст. итогом</th>
+                <th>Вычет (взносы)</th>
+                <th>К доплате за квартал</th>
+            </tr>
+            {% for q in result.quarters %}
+            <tr>
+                <td>{{ q.quarter }} кв.</td>
+                <td>{{ q.income_quarter }} ₽</td>
+                <td>{{ q.cumulative_income }} ₽</td>
+                <td>{{ q.base_tax_cumulative }} ₽</td>
+                <td>{{ q.deduction_cumulative }} ₽</td>
+                <td><strong>{{ q.tax_to_pay_this_quarter }} ₽</strong></td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="summary-row">
+            <span>Общий доход за год</span>
             <span>{{ result.total_income }} ₽</span>
         </div>
-        <div class="row">
-            <span>Ставка налога</span>
-            <span>{{ result.tax_rate }}%</span>
-        </div>
-        <div class="row">
-            <span>Налог до вычета</span>
-            <span>{{ result.base_tax }} ₽</span>
-        </div>
-        <div class="row">
+        <div class="summary-row">
             <span>Страховые взносы</span>
             <span>{{ result.insurance_contribution }} ₽</span>
         </div>
 
-        <div class="highlight">
-            К оплате: {{ result.tax_to_pay }} ₽
+        <div class="highlight" style="margin-top: 15px;">
+            Итого налог за год: {{ result.total_tax_for_year }} ₽
         </div>
 
         <a href="/">← Заполнить заново</a>

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from tax_calculator import calculate_tax
+from tax_calculator import calculate_tax_by_quarters
 
 app = Flask(__name__)
 
@@ -14,9 +14,7 @@ def index():
         q3 = float(request.form['q3'])
         q4 = float(request.form['q4'])
 
-        total_income = q1 + q2 + q3 + q4
-
-        result = calculate_tax(total_income, tax_rate, year)
+        result = calculate_tax_by_quarters(q1, q2, q3, q4, tax_rate, year)
 
         return render_template('result.html', result=result, tax_system=tax_system)
 
