@@ -1,28 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
+    <meta charset="UTF-8">
     <title>Налоговая декларация</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 480px;
+        }
+        h1 {
+            font-size: 22px;
+            color: #1a1a1a;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .field {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            font-size: 14px;
+            color: #444;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d0d5dd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4a90d9;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #2f6fed;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #2559c7;
+        }
+    </style>
 </head>
 <body>
-    <h1>Заполнение декларации</h1>
+    <div class="container">
+        <h1>Заполнение декларации</h1>
 
-    <form method="POST" action="/">
-        <label for="year">Год:</label>
-        <input type="number" id="year" name="year" required><br><br>
+        <form method="POST" action="/">
+            <div class="field">
+                <label for="year">Год</label>
+                <input type="number" id="year" name="year" required>
+            </div>
 
-        <label for="q1">Доход за 1 квартал:</label>
-        <input type="number" step="0.01" id="q1" name="q1" required><br><br>
+            <div class="field">
+                <label for="tax_system">Система налогообложения</label>
+                <select id="tax_system" name="tax_system" required>
+                    <option value="" disabled selected>Выберите систему</option>
+                    <option value="usn">УСН</option>
+                    <option value="usn_dr">УСН Д-Р</option>
+                    <option value="smz">СМЗ</option>
+                    <option value="ooo">ООО</option>
+                    <option value="other">ИНОЕ</option>
+                </select>
+            </div>
 
-        <label for="q2">Доход за 2 квартал:</label>
-        <input type="number" step="0.01" id="q2" name="q2" required><br><br>
+            <div class="field">
+                <label for="tax_rate">Процентная ставка, %</label>
+                <input type="number" step="0.01" id="tax_rate" name="tax_rate" placeholder="Например: 6" required>
+            </div>
 
-        <label for="q3">Доход за 3 квартал:</label>
-        <input type="number" step="0.01" id="q3" name="q3" required><br><br>
+            <div class="field">
+                <label for="q1">Доход за 1 квартал (с 1 января по 31 марта).</label>
+                <input type="number" step="0.01" id="q1" name="q1" required>
+            </div>
 
-        <label for="q4">Доход за 4 квартал:</label>
-        <input type="number" step="0.01" id="q4" name="q4" required><br><br>
+            <div class="field">
+                <label for="q2">Доход за 2 квартал (с 1 апреля по 30 июня).</label>
+                <input type="number" step="0.01" id="q2" name="q2" required>
+            </div>
 
-        <button type="submit">Отправить</button>
-    </form>
+            <div class="field">
+                <label for="q3">Доход за 3 квартал (с 1 июля по 30 сентября.)</label>
+                <input type="number" step="0.01" id="q3" name="q3" required>
+            </div>
+
+            <div class="field">
+                <label for="q4">Доход за 4 квартал ( с 1 октября по 31 декабря.)</label>
+                <input type="number" step="0.01" id="q4" name="q4" required>
+            </div>
+
+            <button type="submit">Рассчитать</button>
+        </form>
+    </div>
 </body>
 </html>

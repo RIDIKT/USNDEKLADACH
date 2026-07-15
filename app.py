@@ -1,23 +1,24 @@
 from flask import Flask, render_template, request
+from tax_calculator import calculate_tax
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        # Получаем данные из формы
         year = int(request.form['year'])
+        tax_system = request.form['tax_system']
+        tax_rate = float(request.form['tax_rate'])
         q1 = float(request.form['q1'])
         q2 = float(request.form['q2'])
         q3 = float(request.form['q3'])
         q4 = float(request.form['q4'])
 
-        # Пока просто выведем их в консоль, чтобы проверить
-        print(f"Год: {year}")
-        print(f"Q1: {q1}, Q2: {q2}, Q3: {q3}, Q4: {q4}")
+        total_income = q1 + q2 + q3 + q4
 
-        # Здесь дальше будет вызов функции расчёта и генерации PDF
-        return f"Данные получены! Год: {year}, доходы: {q1}, {q2}, {q3}, {q4}"
+        result = calculate_tax(total_income, tax_rate, year)
+
+        return render_template('result.html', result=result, tax_system=tax_system)
 
     return render_template('index.html')
 
