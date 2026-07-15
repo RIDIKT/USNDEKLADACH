@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Налоговая декларация</title>
+</head>
+<body>
+    <h1>Заполнение декларации</h1>
+
+    <form method="POST" action="/">
+        <label for="year">Год:</label>
+        <input type="number" id="year" name="year" required><br><br>
+
+        <label for="q1">Доход за 1 квартал:</label>
+        <input type="number" step="0.01" id="q1" name="q1" required><br><br>
+
+        <label for="q2">Доход за 2 квартал:</label>
+        <input type="number" step="0.01" id="q2" name="q2" required><br><br>
+
+        <label for="q3">Доход за 3 квартал:</label>
+        <input type="number" step="0.01" id="q3" name="q3" required><br><br>
+
+        <label for="q4">Доход за 4 квартал:</label>
+        <input type="number" step="0.01" id="q4" name="q4" required><br><br>
+
+        <button type="submit">Отправить</button>
+    </form>
+</body>
+</html>
