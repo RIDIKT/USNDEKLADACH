@@ -150,7 +150,14 @@
 
     <div class="container">
         <h1>Заполнение декларации</h1>
-
+			{% if errors %}
+<				div style="background:#fdecea; color:#c0392b; padding:12px 16px; border-radius:6px; margin-bottom:20px; font-size:13.5px;">
+			<strong>Пожалуйста, исправьте:</strong>
+				<ul style="margin:6px 0 0 18px; padding:0;">
+					{% for e in errors %}<li>{{ e }}</li>{% endfor %}
+				</ul>
+			</div>
+{% endif %}
         <form method="POST" action="/">
             <div class="field">
                 <label for="year">Год</label>
