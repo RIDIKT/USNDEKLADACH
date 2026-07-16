@@ -57,6 +57,14 @@
 <body>
     <div class="container">
         <h1>Результат расчёта</h1>
+		
+			{% if result.exceeds_vat_threshold %}
+		<div style="background:#fdecea; color:#c0392b; padding: 14px 18px; border-radius: 6px; margin-bottom: 20px; font-size: 13.5px; line-height: 1.5;">
+			<strong>⚠ Внимание:</strong> ваш доход превышает 20 000 000 ₽ в год. При таком доходе с 2026 года 
+			может возникнуть обязанность по уплате НДС. Расчёт НДС этот сайт пока не поддерживает — 
+			для точного расчёта налогов при таком доходе обратись к бухгалтеру или в ФНС.
+		</div>
+			{% endif %}
 
         <table>
             <tr>
@@ -64,16 +72,19 @@
                 <th>Доход за квартал</th>
                 <th>Доход нараст. итогом</th>
                 <th>Налог нараст. итогом</th>
-                <th>Вычет (взносы)</th>
+                <th>Доп. взнос 1% нараст.</th>
+                <th>Вычет (ФИКС + ПФР 300)</th>
                 <th>К доплате за квартал</th>
             </tr>
             {% for q in result.quarters %}
             <tr>
+                <td>{{ q.quarter }} кв.</td>
                 <td>{{ q.income_quarter|rub }} ₽</td>
-				<td>{{ q.cumulative_income|rub }} ₽</td>
-				<td>{{ q.base_tax_cumulative|rub }} ₽</td>
-				<td>{{ q.deduction_cumulative|rub }} ₽</td>
-				<td><strong>{{ q.tax_to_pay_this_quarter|rub }} ₽</strong></td>
+                <td>{{ q.cumulative_income|rub }} ₽</td>
+                <td>{{ q.base_tax_cumulative|rub }} ₽</td>
+                <td>{{ q.additional_contribution_cumulative|rub }} ₽</td>
+                <td>{{ q.deduction_cumulative|rub }} ₽</td>
+                <td><strong>{{ q.tax_to_pay_this_quarter|rub }} ₽</strong></td>
             </tr>
             {% endfor %}
         </table>
@@ -81,17 +92,28 @@
         <div class="summary-row">
             <span>Общий доход за год</span>
             <span>{{ result.total_income|rub }} ₽</span>
-
         </div>
+
         <div class="summary-row">
-            <span>Страховые взносы</span>
+            <span>Страховые взносы (фиксированные)</span>
             <span>{{ result.insurance_contribution|rub }} ₽</span>
-
         </div>
 
+        <div class="summary-row">
+            <span>ПФР 300 (1 % на доход свыше 300 000 ₽)</span>
+            <span>{{ result.additional_contribution_total|rub }} ₽</span>
+        </div>
+		<details style="background:#f8f9fb; border-left: 3px solid #94a3b8; padding: 10px 16px; margin-top: 10px; margin-bottom: 15px; font-size: 12.5px; color: #555; border-radius: 4px;">
+				<summary style="cursor: pointer; font-weight: 600; color: #444;">Про доп. взнос 1% (ПФР 300) </summary>
+					<div style="margin-top: 10px; line-height: 1.5;">
+				Платится с дохода свыше 300 000 ₽ в год. Срок уплаты — до 1 июля года, следующего за отчётным
+				(в отличие от фиксированных взносов, которые нужно уплатить до конца текущего года).
+				Уменьшить налог на эту сумму можно уже в текущем году, не дожидаясь фактической уплаты.
+				У взноса также есть законодательный максимум, который зависит от года расчёта.
+				</div>
+				</details>
         <div class="highlight" style="margin-top: 15px;">
             Итого налог за год: {{ result.total_tax_for_year|rub }} ₽
-
         </div>
 
         <a href="/">← Заполнить заново</a>
