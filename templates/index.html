@@ -187,22 +187,26 @@
 
             <div class="field">
                 <label for="q1">Доход за 1 квартал (с 1 января по 31 марта).</label>
-                <input type="number" step="0.01" id="q1" name="q1" required>
+                <input type="text" inputmode="decimal" id="q1" name="q1" required oninput="formatMoneyInput(this)">
+
             </div>
 
             <div class="field">
                 <label for="q2">Доход за 2 квартал (с 1 апреля по 30 июня).</label>
-                <input type="number" step="0.01" id="q2" name="q2" required>
+                <input type="text" inputmode="decimal" id="q2" name="q2" required oninput="formatMoneyInput(this)">
+
             </div>
 
             <div class="field">
                 <label for="q3">Доход за 3 квартал (с 1 июля по 30 сентября).</label>
-                <input type="number" step="0.01" id="q3" name="q3" required>
+                <input type="text" inputmode="decimal" id="q3" name="q3" required oninput="formatMoneyInput(this)">
+
             </div>
 
             <div class="field">
                 <label for="q4">Доход за 4 квартал ( с 1 октября по 31 декабря).</label>
-                <input type="number" step="0.01" id="q4" name="q4" required>
+                <input type="text" inputmode="decimal" id="q4" name="q4" required oninput="formatMoneyInput(this)">
+
             </div>
 
             <button type="submit">Рассчитать</button>
@@ -232,6 +236,16 @@
             const warning = document.getElementById('tax_warning');
             warning.style.display = (select.value === 'usn') ? 'none' : 'block';
         }
+		function formatMoneyInput(el) {
+		// Убираем всё, кроме цифр и точки
+		let value = el.value.replace(/\s/g, '').replace(/[^0-9.]/g, '');
+		if (value === '') return;
+
+		let parts = value.split('.');
+		// Добавляем пробелы между разрядами в целой части
+		parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+		el.value = parts.length > 1 ? parts[0] + '.' + parts[1] : parts[0];
+}
     </script>
 </body>
 </html>
