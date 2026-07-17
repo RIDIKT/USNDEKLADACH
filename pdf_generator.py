@@ -9,15 +9,22 @@
 """
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from pypdf import PdfReader, PdfWriter
-import json, io, os,sys
+import json, io, os, sys
 
 PAGE_W, PAGE_H = 595, 842
-if getattr(sys, 'frozen', False):
-    BASE_DIR = sys._MEIPASS
-else:
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TILE_DIR = os.path.join(BASE_DIR, "pdf_template")
+FONT_PATH = os.path.join(BASE_DIR, "fonts", "DejaVuSansMono.ttf")
+
+# Встраиваем шрифт с поддержкой кириллицы прямо в PDF — иначе на компьютере,
+# где нет подходящего системного шрифта для замены, вместо букв рисуются
+# сплошные чёрные прямоугольники ("не найден символ").
+FONT_NAME = "DejaVuSansMono"
+pdfmetrics.registerFont(TTFont(FONT_NAME, FONT_PATH))
+
 with open(os.path.join(TILE_DIR, "tile_data.json")) as f:
     TILES = json.load(f)
 
@@ -71,7 +78,7 @@ FIELDS = {
 def draw_field(c, key, text):
     page_idx, align, x_ref, top, pitch, ncells = FIELDS[key]
     fontsize = pitch / 0.6
-    c.setFont("Courier", fontsize)
+    c.setFont(FONT_NAME, fontsize)
     text = str(text)[:ncells]
     n = len(text)
     if align == "left":
@@ -89,12 +96,12 @@ def build_overlay(data: dict) -> dict:
     for pnum in range(4):
         c = canvases[pnum]
         fontsize = FIELDS["inn"][4] / 0.6
-        c.setFont("Courier", fontsize)
+        c.setFont(FONT_NAME, fontsize)
         inn_text = str(data.get("inn", ""))
         for i, ch in enumerate(inn_text[:12]):
             c.drawString(219.8 + i * 12.345, y(10.3) - fontsize * 0.75, ch)
         fontsize2 = 12.3 / 0.6
-        c.setFont("Courier", fontsize2)
+        c.setFont(FONT_NAME, fontsize2)
         for i, ch in enumerate(f"{pnum+1:03d}"):
             c.drawString(355.6 + i * 12.3, y(30.0) - fontsize2 * 0.75, ch)
 
@@ -138,12 +145,6 @@ def generate_pdf(data: dict, output_path: str):
 
 
 def build_declaration_data(personal: dict, calc_result: dict) -> dict:
-    """
-    personal: {inn, correction_num, period_code, year, tax_authority,
-               location_code, fio_line1, fio_line2, fio_line3, phone,
-               has_employees, oktmo}
-    calc_result: результат calculate_tax_by_quarters()
-    """
     q = calc_result["quarters"]
     return {
         "inn": personal["inn"],
